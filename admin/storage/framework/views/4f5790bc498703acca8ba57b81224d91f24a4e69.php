@@ -1,0 +1,1 @@
+<?php /**PATH C:\laravel\postermaker\postermaker\resources\views/admin/createimage.blade.php ENDPATH**/ ?>
