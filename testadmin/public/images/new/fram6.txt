@@ -1,0 +1,69 @@
+$newMainImage->text('+91 828 182 4556', $newMainImage->width() -920, $newMainImage->height() - 195, function($font) {
+    $font->file(public_path('static/Montserrat-Bold.ttf'));
+    $font->size(30);
+    $font->color('#fff');
+    $font->align('left');
+});
+// Add the email (bottom left)
+$newMainImage->text('saurabhinfosys@gmail.com', $newMainImage->width() - 250, $newMainImage->height() - 55, function($font) {
+    $font->file(public_path('static/Montserrat-Bold.ttf'));
+    $font->size(25);
+    $font->color('#00000');
+    $font->align('center');
+});
+// Add website (bottom right)
+$newMainImage->text('www.saurabhinfosys.com', $newMainImage->width() - 90, $newMainImage->height() - 120, function($font) {
+    $font->file(public_path('static/Montserrat-Bold.ttf'));
+    $font->size(25);
+    $font->color('#00000');
+    $font->align('right');
+});
+// Add location (center middle)
+        // Add location (center middle)
+        $text = "Lorem Ipsum is simply dummy text of the printing and typesetting industry.";
+        $maxWidth = 380;  // Max width in pixels
+        $maxHeight = 81.98;  // Max height in pixels
+        $fontSize = 20; // Example font size
+
+// Approximate character limit per line based on the width (adjust as needed)
+$charactersPerLine = floor($maxWidth / ($fontSize * 0.6)); // Estimation: 0.6 based on average character width for the font
+
+// Split the text into words
+$words = explode(' ', $text);
+
+// Wrap text based on the character limit
+$wrappedText = '';
+$currentLine = '';
+foreach ($words as $word) {
+    // Check if adding the next word exceeds the line limit
+    if (strlen($currentLine . ' ' . $word) > $charactersPerLine) {
+        // Add current line to wrapped text and reset current line
+        $wrappedText .= trim($currentLine) . "\n";
+        $currentLine = $word; // Start new line with the current word
+    } else {
+        // Add word to the current line
+        $currentLine .= ' ' . $word;
+    }
+}
+
+// Add any remaining text from the last line
+if (!empty($currentLine)) {
+    $wrappedText .= trim($currentLine);
+}
+
+// Approximate the number of lines based on the height constraint
+$lineHeight = $fontSize * 1.2; // Line height as a multiple of font size (adjustable)
+$maxLines = floor($maxHeight / $lineHeight);
+
+// Limit the number of lines to fit within the height
+$lines = explode("\n", $wrappedText);
+$limitedText = implode("\n", array_slice($lines, 0, $maxLines));
+
+// Apply the text to the image
+$newMainImage->text($limitedText,  $newMainImage->width() - 800, $newMainImage->height() -100, function($font) {
+    $font->file(public_path('fonts/Roboto-Bold.ttf'));
+    $font->size(20);
+    $font->color('#00000');
+    $font->align('center');
+    $font->valign('middle');
+});
