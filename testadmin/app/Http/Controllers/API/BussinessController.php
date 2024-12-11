@@ -163,6 +163,19 @@ class BussinessController extends Controller
     }
     public function store_bussiness_time(Request $request)
     {
+        if($request->has('bussiness_id'))
+
+        {
+        $existingData = bussinesstime::where('business_id', $request->bussiness_id)->get();
+
+            if ($existingData->isNotEmpty()) {
+                foreach ($existingData as $item) {
+                    $item->delete();
+                }
+            }
+                
+        }
+          
 
         foreach ($request->hours as $hour) {
             bussinesstime::create([
@@ -248,7 +261,6 @@ class BussinessController extends Controller
             "Business data displayed successfully"
         );
     }
-
     public function base64Image(Request $request)
     {
         if ($request->has("file")) {
@@ -289,16 +301,29 @@ class BussinessController extends Controller
             // Generate a unique filename for the file
             $fileName = uniqid() . '.' . $type;  // Save with original file extension (e.g., mp4, jpg, png)
     
-            // Define the directory based on the file type
+            // // Define the directory based on the file type
+            // if ($fileType === 'image') {
+            //     $directory = public_path("images/business/");
+            //     $url = url("images/business/" . $fileName);
+
+            // } else {
+            //     $directory = public_path("images/business/videos/");
+            //     $url = url("images/business/videos" . $fileName);
+
+            // }
+
+
+            $targetFolder = $request->folder; // Default to 'business' if not provided
+
+            // Define the directory based on the file type and target folder
             if ($fileType === 'image') {
-                $directory = public_path("images/business/");
-                $url = url("images/business/" . $fileName);
-
+                $directory = public_path("images/$targetFolder/");
+                $url = url("images/$targetFolder/" . $fileName);
             } else {
-                $directory = public_path("images/business/videos/");
-                $url = url("images/business/videos" . $fileName);
-
+                $directory = public_path("images/$targetFolder/videos/");
+                $url = url("images/$targetFolder/videos/" . $fileName);
             }
+    
     
             // Ensure the directory exists
             if (!is_dir($directory)) {
@@ -331,8 +356,6 @@ class BussinessController extends Controller
             ]);
         }
     }
-    
-     
     public function add_bussiness_images(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -367,7 +390,6 @@ class BussinessController extends Controller
             "Business Image Added successfully"
         );
     }
-
     public function display_bussiness_images(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -402,6 +424,88 @@ class BussinessController extends Controller
         }
 
     }
+    public function product_edit(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            "product_id" => "required"
+        ]);
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 400);
+        }
+
+        $existingData =  Product::find($request->product_id);
+        if($existingData)
+        {
+            $existingData->delete();
+        }
+
+
+        $data = new Product;
+        $data->bussiness_id = $request->bussiness_id;
+        $data->name = $request->name;
+        $data->description = $request->description;
+        $data->starting_price = $request->starting_price;
+
+        $data->save();
+
+      
+       
+        foreach($images as $imagename)
+        {
+         
+               $image = new ProductImages;
+               $image->product_id = $data->id;
+               $image->images = $imagename;
+               $image->save();
+
+        }
+           
+       
+
+        
+    }
+
+    public function service_edit(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            "service_id" => "required"
+        ]);
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 400);
+        }
+
+        $existingData =  Service::find($request->service_id);
+        if($existingData)
+        {
+            $existingData->delete();
+        }
+
+
+        $data = new Product;
+        $data->bussiness_id = $request->bussiness_id;
+        $data->name = $request->name;
+        $data->description = $request->description;
+        $data->starting_price = $request->starting_price;
+
+        $data->save();
+
+      
+       
+        foreach($images as $imagename)
+        {
+         
+               $image = new ServiceImges;
+               $image->service_id = $data->id;
+               $image->images = $imagename;
+               $image->save();
+
+        }
+           
+       
+
+        
+    }
+
     public function updateBusiness(Request $request)
     {
         $business = Business::find($request->id);
@@ -585,6 +689,7 @@ class BussinessController extends Controller
          $data->save();
 
          if ($request->hasFile('images')) {
+
             foreach ($request->file('images') as $uploadedImage) {
                 // Generate unique filename
                 $unique = uniqid();
@@ -609,6 +714,7 @@ class BussinessController extends Controller
 
          
     }
+    
     public function testimonial_add(Request $request)
     {
         $validator = Validator::make($request->all(), [
